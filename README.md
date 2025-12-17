@@ -39,6 +39,18 @@ Detailed output:
 $ amroutify -config alertmanager.yml -tests routing_tests.yml --verbose
 ```
 
+## Example
+
+The `example/` directory contains sample configuration files demonstrating complex routing scenarios:
+
+- `alertmanager.yml` - Alertmanager configuration with nested routes, `continue` flags, and multiple receivers
+- `routing_tests.yml` - Corresponding test cases covering all routing paths
+
+Run the example:
+```bash
+$ amroutify -config example/alertmnager.yml -tests example/routing_tests.yml
+```
+
 ## Exit Codes
 
 - `0`: All tests passed

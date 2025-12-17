@@ -1,0 +1,197 @@
+# Test cases for alertmanager_example.yml
+# These tests verify the complex routing structure
+
+tests:
+  # ============================================
+  # 1. Maintenance mode tests
+  # ============================================
+  - name: "Maintenance mode - alerts discarded"
+    labels:
+      alertname: "HighCPU"
+      severity: "critical"
+      maintenance: "true"
+    expected_receivers:
+      - "blackhole"
+    description: "Alerts with maintenance=true should be discarded regardless of severity"
+
+  # ============================================
+  # 2. Batch job notification tests
+  # ============================================
+  - name: "Batch job alert - scheduler webhook only"
+    labels:
+      alertname: "BatchJobFailed"
+      batch_job_id: "job-12345"
+    expected_receivers:
+      - "job-scheduler-webhook"
+    description: "Batch job alerts without severity go to scheduler webhook only (no fallback to default)"
+
+  - name: "Batch job with severity info"
+    labels:
+      alertname: "BatchJobStatus"
+      batch_job_id: "job-67890"
+      severity: "info"
+    expected_receivers:
+      - "job-scheduler-webhook"
+      - "slack-info"
+    description: "Batch job with severity=info routes to both scheduler and slack-info"
+
+  # ============================================
+  # 3. Informational alert tests
+  # ============================================
+  - name: "Ino severity - dedicated channel"
+    labels:
+      alertname: "DiskUsageNotice"
+      severity: "info"
+    expected_receivers:
+      - "slack-info"
+    description: "Informational alerts route to dedicated slack-info channel"
+
+  # ============================================
+  # 4. Debug alert tests
+  # ============================================
+  - name: "Debug alert - firing only"
+    labels:
+      alertname: "DebugMetric"
+      severity: "debug"
+    expected_receivers:
+      - "debug-fire-only"
+    description: "Debug alerts without recovery flag use fire-only receiver"
+
+  - name: "Debug alert - with recovery"
+    labels:
+      alertname: "DebugMetric"
+      severity: "debug"
+      recovery: "true"
+    expected_receivers:
+      - "debug-with-resolve"
+    description: "Debug alerts with recovery=true use resolve receiver"
+
+  # ============================================
+  # 5. Warning alert tests
+  # ============================================
+  - name: "Warning alert - firing"
+    labels:
+      alertname: "HighMemory"
+      severity: "warning"
+    expected_receivers:
+      - "slack-alert"
+    description: "Warning alerts route to slack-alert"
+
+  - name: "Warning alert - recovery"
+    labels:
+      alertname: "HighMemory"
+      severity: "warning"
+      recovery: "true"
+    expected_receivers:
+      - "slack-with-resolve"
+    description: "Warning alerts with recovery=true route to slack-with-resolve"
+
+  # ============================================
+  # 6. Critical alert tests (complex routing)
+  # ============================================
+  - name: "Critical alert - firing (multi-receiver)"
+    labels:
+      alertname: "ServiceDown"
+      severity: "critical"
+    expected_receivers:
+      - "slack-alert"
+      - "email-fire"
+      - "alert-lamp-on"
+    description: "Critical firing alerts go to Slack, email, and alert lamp"
+
+  - name: "Critical alert - recovery (multi-receiver)"
+    labels:
+      alertname: "ServiceDown"
+      severity: "critical"
+      recovery: "true"
+    expected_receivers:
+      - "slack-with-resolve"
+      - "email-resolve"
+      - "alert-lamp-off"
+    description: "Critical recovery alerts go to Slack, email, and turn off alert lamp"
+
+  - name: "Critical alert - phone escalation for platform team"
+    labels:
+      alertname: "DatabaseDown"
+      severity: "critical"
+      escalation_target: "platform-team"
+    expected_receivers:
+      - "slack-alert"
+      - "oncall-phone"
+    description: "Critical alerts for platform-team trigger phone escalation"
+
+  - name: "Critical alert - phone escalation with recovery"
+    labels:
+      alertname: "DatabaseDown"
+      severity: "critical"
+      escalation_target: "platform-team"
+      recovery: "true"
+    expected_receivers:
+      - "slack-with-resolve"
+      - "oncall-phone"
+    description: "Critical recovery for platform-team still triggers phone (for tracking)"
+
+  # ============================================
+  # 7. Combined label tests (continue flag behavior)
+  # ============================================
+  - name: "Batch job with critical severity - firing"
+    labels:
+      alertname: "CriticalBatchFailure"
+      batch_job_id: "critical-job-001"
+      severity: "critical"
+    expected_receivers:
+      - "job-scheduler-webhook"
+      - "slack-alert"
+      - "email-fire"
+      - "alert-lamp-on"
+    description: "Critical batch job failure routes to scheduler and all critical receivers"
+
+  - name: "Batch job with warning severity"
+    labels:
+      alertname: "BatchJobSlow"
+      batch_job_id: "slow-job-002"
+      severity: "warning"
+    expected_receivers:
+      - "job-scheduler-webhook"
+      - "slack-alert"
+    description: "Warning batch job routes to scheduler and slack-alert"
+
+  # ============================================
+  # 8. Default route tests
+  # ============================================
+  - name: "Unknown severity - falls through to default"
+    labels:
+      alertname: "CustomAlert"
+      severity: "custom"
+    expected_receivers:
+      - "slack-default"
+    description: "Alerts with unknown severity fall through to default receiver"
+
+  - name: "No severity label - default receiver"
+    labels:
+      alertname: "SimpleAlert"
+    expected_receivers:
+      - "slack-default"
+    description: "Alerts without severity label route to default receiver"
+
+  # ============================================
+  # 9. Edge case tests
+  # ============================================
+  - name: "Maintenance overrides critical"
+    labels:
+      alertname: "CriticalFailure"
+      severity: "critical"
+      escalation_target: "platform-team"
+      maintenance: "true"
+    expected_receivers:
+      - "blackhole"
+    description: "Maintenance flag takes precedence over all other routing"
+
+  - name: "Empty batch_job_id does not match regex"
+    labels:
+      alertname: "SomeAlert"
+      batch_job_id: ""
+      severity: "info"
+    expected_receivers:
+      - "slack-info"
+    description: "Empty batch_job_id should not match .+ regex"
