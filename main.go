@@ -12,13 +12,25 @@ import (
 )
 
 var (
-	configFile = flag.String("config", "alertmanager.yml", "Path to Alertmanager configuration file")
-	testsFile  = flag.String("tests", "routing_tests.yml", "Path to routing test cases file")
-	verbose    = flag.Bool("verbose", false, "Show detailed output for tests")
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
+var (
+	configFile  = flag.String("config", "alertmanager.yml", "Path to Alertmanager configuration file")
+	testsFile   = flag.String("tests", "routing_tests.yml", "Path to routing test cases file")
+	verbose     = flag.Bool("verbose", false, "Show detailed output for tests")
+	showVersion = flag.Bool("version", false, "Show version information")
 )
 
 func main() {
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("amroutify %s (commit: %s, built: %s)\n", version, commit, date)
+		return
+	}
 
 	amConfig, err := config.LoadAlertmanagerConfig(*configFile)
 	if err != nil {
