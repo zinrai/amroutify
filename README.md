@@ -60,7 +60,6 @@ tests:
       severity: critical
     expected_receivers:
       - "team-DB-pager"
-    description: "Critical database alerts should go to DB team pager"
 
   - name: "Multi-receiver test with continue flag"
     labels:
@@ -69,7 +68,6 @@ tests:
     expected_receivers:
       - "team-DB-pager"
       - "team-X-email"
-    description: "Alert matches multiple receivers due to continue flag"
 ```
 
 ## License

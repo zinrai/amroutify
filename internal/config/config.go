@@ -12,7 +12,6 @@ type TestCase struct {
 	Name              string            `yaml:"name"`
 	Labels            map[string]string `yaml:"labels"`
 	ExpectedReceivers []string          `yaml:"expected_receivers"`
-	Description       string            `yaml:"description,omitempty"`
 }
 
 type TestSuite struct {
