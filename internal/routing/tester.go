@@ -5,7 +5,7 @@ import (
 
 	"github.com/prometheus/alertmanager/dispatch"
 	"github.com/prometheus/common/model"
-	"github.com/zinrai/amroutify/pkg/config"
+	"github.com/zinrai/amroutify/internal/config"
 )
 
 type TestResult struct {

@@ -7,8 +7,8 @@ import (
 	"os"
 
 	"github.com/prometheus/alertmanager/dispatch"
-	"github.com/zinrai/amroutify/pkg/config"
-	"github.com/zinrai/amroutify/pkg/routing"
+	"github.com/zinrai/amroutify/internal/config"
+	"github.com/zinrai/amroutify/internal/routing"
 )
 
 var (
