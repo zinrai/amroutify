@@ -17,7 +17,7 @@ Maintaining Alertmanager routing configurations can become challenging as they g
 - **Support for complex routing**: Test scenarios with `continue: true` resulting in multiple receivers
 - **Order-independent verification**: Receiver order doesn't matter for test success
 - **CI/CD Integration**: Integrate with GitHub Actions or other CI systems
-- **Detailed output**: Verbose mode shows matching routes and receivers for debugging
+- **Detailed output**: Shows matched receivers for every test case
 
 ## Installation
 
@@ -27,16 +27,8 @@ $ go build
 
 ## Usage
 
-Basic usage:
-
 ```bash
 $ amroutify -config alertmanager.yml -tests routing_tests.yml
-```
-
-Detailed output:
-
-```bash
-$ amroutify -config alertmanager.yml -tests routing_tests.yml --verbose
 ```
 
 ## Example

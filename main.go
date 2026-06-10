@@ -20,7 +20,6 @@ var (
 var (
 	configFile  = flag.String("config", "alertmanager.yml", "Path to Alertmanager configuration file")
 	testsFile   = flag.String("tests", "routing_tests.yml", "Path to routing test cases file")
-	verbose     = flag.Bool("verbose", false, "Show detailed output for tests")
 	showVersion = flag.Bool("version", false, "Show version information")
 )
 
@@ -44,9 +43,9 @@ func main() {
 
 	route := dispatch.NewRoute(amConfig.Route, nil)
 
-	results := routing.RunTests(route, testCases, *verbose)
+	results := routing.RunTests(route, testCases)
 
-	failedTests := printResults(results, *verbose)
+	failedTests := printResults(results)
 
 	if failedTests > 0 {
 		os.Exit(1)
@@ -54,22 +53,17 @@ func main() {
 }
 
 // Displays the test results and returns the number of failed tests
-func printResults(results []routing.TestResult, verbose bool) int {
+func printResults(results []routing.TestResult) int {
 	failedTests := 0
 
 	for _, result := range results {
 		if result.Success {
 			fmt.Printf("PASS: %s\n", result.Name)
-			if verbose {
-				fmt.Printf("  Matched receivers: %v\n", result.Actual)
-				for i, r := range result.Routes {
-					fmt.Printf("  Route %d: %s\n", i+1, r.RouteOpts.Receiver)
-				}
-			}
+			fmt.Printf("  Receivers: %v\n", result.Actual)
 		} else {
 			fmt.Printf("FAIL: %s\n", result.Name)
-			fmt.Printf("  Expected receivers: %v\n", result.Expected)
-			fmt.Printf("  Actual receivers:   %v\n", result.Actual)
+			fmt.Printf("  Expected: %v\n", result.Expected)
+			fmt.Printf("  Actual:   %v\n", result.Actual)
 			failedTests++
 		}
 	}

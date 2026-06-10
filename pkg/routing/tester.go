@@ -13,15 +13,14 @@ type TestResult struct {
 	Success  bool
 	Expected []string
 	Actual   []string
-	Routes   []*dispatch.Route // Only used when verbose=true
 }
 
 // Executes all the test cases against the given routing tree and returns results
-func RunTests(route *dispatch.Route, testCases []config.TestCase, verbose bool) []TestResult {
+func RunTests(route *dispatch.Route, testCases []config.TestCase) []TestResult {
 	results := make([]TestResult, 0, len(testCases))
 
 	for _, tc := range testCases {
-		result := runTest(route, tc, verbose)
+		result := runTest(route, tc)
 		results = append(results, result)
 	}
 
@@ -29,7 +28,7 @@ func RunTests(route *dispatch.Route, testCases []config.TestCase, verbose bool) 
 }
 
 // Executes a single test case
-func runTest(route *dispatch.Route, tc config.TestCase, verbose bool) TestResult {
+func runTest(route *dispatch.Route, tc config.TestCase) TestResult {
 	result := TestResult{
 		Name:     tc.Name,
 		Expected: tc.ExpectedReceivers,
@@ -43,11 +42,6 @@ func runTest(route *dispatch.Route, tc config.TestCase, verbose bool) TestResult
 
 	// Find matching routes
 	matchingRoutes := route.Match(labelSet)
-
-	// Store routes for verbose output
-	if verbose {
-		result.Routes = matchingRoutes
-	}
 
 	// Extract receivers
 	var receivers []string
