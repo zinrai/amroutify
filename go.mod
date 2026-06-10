@@ -3,9 +3,9 @@ module github.com/zinrai/amroutify
 go 1.24.0
 
 require (
+	github.com/goccy/go-yaml v1.19.2
 	github.com/prometheus/alertmanager v0.28.1
 	github.com/prometheus/common v0.64.0
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
