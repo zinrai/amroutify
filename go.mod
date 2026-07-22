@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/goccy/go-yaml v1.19.2
-	github.com/prometheus/alertmanager v0.33.0
+	github.com/prometheus/alertmanager v0.33.1
 	github.com/prometheus/common v0.70.0
 )
 
