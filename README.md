@@ -19,12 +19,6 @@ Maintaining Alertmanager routing configurations can become challenging as they g
 - **CI/CD Integration**: Integrate with GitHub Actions or other CI systems
 - **Detailed output**: Shows matched receivers for every test case
 
-## Installation
-
-```bash
-$ go build
-```
-
 ## Usage
 
 ```bash
