@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/goccy/go-yaml v1.19.2
 	github.com/prometheus/alertmanager v0.34.2
-	github.com/prometheus/common v0.72.1
+	github.com/prometheus/common v0.73.1
 )
 
 require (
@@ -55,6 +55,7 @@ require (
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f // indirect
 	github.com/oklog/run v1.2.0 // indirect
 	github.com/oklog/ulid/v2 v2.1.2 // indirect
+	github.com/pandatix/go-abnf v0.5.3 // indirect
 	github.com/pierrec/lz4/v4 v4.1.26 // indirect
 	github.com/prometheus/client_golang v1.24.1 // indirect
 	github.com/prometheus/client_model v0.6.3 // indirect
